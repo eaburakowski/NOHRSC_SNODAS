@@ -33,7 +33,7 @@
 			mv $datfiles PRSL/.
 			;;
 			*1034*) 
-			mv $datfiles SWE/.
+			mv $datfiles SWEM/.
 			;;
 			*1036*) 
 			mv $datfiles SNWZ/.
@@ -45,7 +45,7 @@
 			mv $datfiles SUBB/.
 			;;
 			*1044*) 
-			mv $datfiles SNWMLT/.
+			mv $datfiles SNWM/.
 			;;
 			*1050*) 
 			mv $datfiles SUBS/.
