@@ -5,6 +5,13 @@
 # (2) unzip
 # (3) copy .HDR to .hdr
 # (4) move .dat to variable specific dirs
+	# PRLQ = liquid precipitation
+	# PRSL = solid precipitation
+	# SWEM = snow water equivalent, in meters
+	# SNWZ = snow depth
+	# SNWT = snowpack temperature
+	# SUBB = sublimation from blowing snow
+	# SUBS = sublimation from snow pack
 
 # Loop over SNODAS tar files
  for file in *.tar; 
