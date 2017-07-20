@@ -7,6 +7,7 @@ I'm happy to answer questions and welcome helpful suggestions for improving effi
 elizabeth.burakowski@unh.edu
 
 Files listed in order of use in my processing & analysis:
+
 getSNODAS.sh 
 - a short bash script for retrieving Nov-Apr (2004-2017) .tar files from the National Snow and Ice Data Center (NSIDC) ftp site. Uses wget.
 
