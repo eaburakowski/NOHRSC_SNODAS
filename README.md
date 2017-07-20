@@ -19,3 +19,5 @@ procSNODAS.sh
 - bash script that converts .dat files to .nc using gdal_translate. Also uses nco's ncrename and ncatted.
 
 addtimeSNODAS.ncl
+- adds unlimited time dimension to .nc files created in procSNODAS.sh.  Surely there's a way to do it with NCO, but
+  I found it to be easier in NCL. 
