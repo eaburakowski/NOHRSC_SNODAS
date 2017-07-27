@@ -2,8 +2,21 @@
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
-load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
 
+;---------------------------------------------------------------------
+;
+; subsetSNODAS_avgSNWZ.ncl
+;
+;   - subsets SNODAS .nc files to a smaller region in the US using 
+;     latmin, latmax, lonmin, lonmax bounds
+;   - calculates the seasonal or monthly average snow depth (SNWZ)
+;   - creates .nc file of 2004-2017 average snow depth for use in other
+;     scripts (ie. plotNESNODAS.ncl)
+;
+;   * could probably combine plotting into the end of this script if
+;     region is small.  
+;
+; ---------------------------------------------------------------------
 ;======================================================================
 ;                         The main code
 ;======================================================================
@@ -13,10 +26,10 @@ begin
 ;---A few constants
     years		= ispan(2004,2017,1)
     years!0		= "year"
-    latmin		= 38 ; 42.647  ; 38 
-    latmax		= 50 ; 45.481  ; 50
-    lonmin		= -78 ; -72.702  ; -78
-    lonmax		= -66.9421 ; -70.428  ; -66.9421
+    latmin		= 38 
+    latmax		= 50 
+    lonmin		= -78 
+    lonmax		= -66.9421 
     var                = "SNWZ"
     dir                = "/net/nfs/yukon/raid5/data/NOHRSC_SNODAS/nc/"
     
@@ -31,8 +44,7 @@ print("max lat = "+max(lat))
 print("min lon = "+min(lon))
 print("max lon = "+max(lon))
 
-
-
+  ;-- creat empty variable to hold seasonal average snow depths (nyr,nlat,nlon)
     avg_ndjfma          = new((/dimsizes(years),dimsizes(b_ne(:,0)),dimsizes(b_ne(0,:))/),float)
     avg_ndjfma@_FillValue = -9999   
     avg_ndjfma!0	= "year"
@@ -48,22 +60,19 @@ printVarSummary(avg_ndjfma)
 
     do iyr=0,dimsizes(years)-2
 	print("Working on "+years(iyr)+" and "+years(iyr+1))
-        ;nd	= ind(yyyy.eq.years(iyr) .and. mm.ge.12)	; nov dec
-	;jfma	= ind(yyyy.eq.years(iyr+1) .and. mm.le.3)	; jan feb mar apr
-        n_a	= ind(yyyy.eq.years(iyr+1) .and. mm.eq.1)
-        ;n_a	= array_append_record(nd,jfma,0)
+        nd	= ind(yyyy.eq.years(iyr) .and. mm.ge.12)	; nov dec
+	jfma	= ind(yyyy.eq.years(iyr+1) .and. mm.le.3)	; jan feb mar apr
+        n_a	= array_append_record(nd,jfma,0)
 	print(dimsizes(n_a))
         fils 	= addfiles(dir+f(n_a),"r")
 	ListSetType(fils,"join")
 	snwz	= fils[:]->SNWZ(:,{latmin:latmax},{lonmin:lonmax})
-printVarSummary(snwz)
 
-       ;-- Calculate seasonal average snow depth
+       ;-- Calculate seasonal average snow depth for iyr
         avg_ndjfma(iyr,:,:)	= dim_avg_n_Wrap(snwz,0)
 
        ;-- Delete temporary variables at end of loop
        ;delete([/nd,jfma,n_a,fils,snwz/])
-       delete([/n_a,fils,snwz/])
     end do  ; years
 
 printVarSummary(avg_ndjfma)
@@ -72,9 +81,8 @@ print("Max avg Dec-Mar snow depth = "+max(avg_ndjfma))
 
  ;--- Calculate 2004-2017 average snow depth
       avg_2004_2017	= dim_avg_n_Wrap(avg_ndjfma,0)
-printVarSummary(avg_2004_2017)
 
- ;--- Write average snow depth, 2003-2017 to .nc file for plotting
+ ;--- Write average snow depth, 2003-2017 to .nc file for plotting in plotNESNODAS.ncl
 
     ;--- Filename for nc4 file
       fn 		= "NE_Avg_Jan_"+var+"_"+years(0)+"-"+years(dimsizes(years)-1)+""
@@ -95,7 +103,7 @@ printVarSummary(avg_2004_2017)
       fAtt@creation_date= systemfunc("date")
       fAtt@author	= "Elizabeth Burakowski (elizabeth.burakowski@unh.edu)"
       
-      fAtt@description 	= "Average December through March, "+var+" [snow depth] in meters, "+years(0)+"-"+years(dimsizes(years)-1)+""
+      fAtt@description 	= "Average December through March, "+var+" [snow depth] in mm, "+years(0)+"-"+years(dimsizes(years)-1)+""
       
     ;--- file attributes, size
       fileattdef(ncdf,fAtt)
@@ -103,7 +111,6 @@ printVarSummary(avg_2004_2017)
       dimSizes		= (/ dimsizes(b_ne(:,0)), dimsizes(b_ne(0,:)) /)
       dimUnlim          = (/ False, False /)
       filedimdef(ncdf,dimNames,dimSizes,dimUnlim)
-
 
     ;--- Define file variables
       filevardef(ncdf,"lat",typeof(lat),getvardims(lat))
