@@ -22,3 +22,12 @@ procSNODAS.sh
 addtimeSNODAS.ncl
 - adds unlimited time dimension to .nc files created in procSNODAS.sh.  Surely there's a way to do it with NCO, but
   I found it to be easier in NCL. 
+  
+subsetSNODAS_avgSNWZ.ncl
+- selects a regional subset from SNODAS files, calculates a seasonal (or monthly) mean, max, and min snow depth for each 
+  season,and then calculates a climatological (well, 2003-2017) mean, max, and min for the period of record. 
+- output is a single .nc file of the climatological mean, max, and min snow depth for regional subset.
+- could combine with plotting script (plotNESNODAS.ncl) if region is small.
+
+plotNESNODAS.ncl
+- plots up map of seasonal or monthly average snow depth for region in US.  Output is .png graphic of data.
