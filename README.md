@@ -38,3 +38,7 @@ subsetSNODAS_avgSNWDAYS.ncl
   calculates the climatological mean number of snow days > user-defined snow depth threshold. 
 - output is a single .nc file of climatological mean number of snow days with snow depth > user-defined snow depth
 - could combine with plotting script (plotNESNODAS_snowdays.ncl) if region is small. 
+
+plotNESNODAS_snowdays.ncl
+- plots up map of number of days per winter with snow depth > user-defined threshold. Includes contour at 20 days.  
+- Output is .png graphic of data.
