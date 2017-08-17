@@ -25,9 +25,16 @@ addtimeSNODAS.ncl
   
 subsetSNODAS_avgSNWZ.ncl
 - selects a regional subset from SNODAS files, calculates a seasonal (or monthly) mean, max, and min snow depth for each 
-  season,and then calculates a climatological (well, 2003-2017) mean, max, and min for the period of record. 
+  season,and then calculates a climatological (well, 2004-2017) mean, max, and min for the period of record. 
 - output is a single .nc file of the climatological mean, max, and min snow depth for regional subset.
 - could combine with plotting script (plotNESNODAS.ncl) if region is small.
 
 plotNESNODAS.ncl
 - plots up map of seasonal or monthly average snow depth for region in US.  Output is .png graphic of data.
+
+subsetSNODAS_avgSNWDAYS.ncl
+- similar to subsetSNODAS_avgSNWZ.ncl, this script selects a regional subset from SNODAS files, calculates the number of   
+  days per winter (Nov-Apr) with snow depth > user-defined threshold for each year in record (2004-2017), and then 
+  calculates the climatological mean number of snow days > user-defined snow depth threshold. 
+- output is a single .nc file of climatological mean number of snow days with snow depth > user-defined snow depth
+- could combine with plotting script (plotNESNODAS_snowdays.ncl) if region is small. 
