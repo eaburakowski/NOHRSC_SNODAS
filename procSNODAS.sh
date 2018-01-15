@@ -1,4 +1,8 @@
-#! /bin/bsh
+#! /bin/bash
+
+# Stop of get any simple error
+ set -e
+
 # EA Burakowski 
 # 2017-07-17
 
@@ -43,14 +47,24 @@
 #
 ##############################################################################
  
+ # Make sure the SNODAS_DATA_DIR environment variable is set
+ if [ -z "$SNODAS_DATA_DIR" ]; then
+    echo "Need to set SNODAS_DATA_DIR"
+    exit 1
+ fi
+
+ # Flag if using masked or unmasked SNODAS extent
+ masked=false 
+
  # Define directory with variable subdirs of dat files
- cd /net/nfs/yukon/raid5/data/NOHRSC_SNODAS/dat_orig
+ cd $SNODAS_DATA_DIR
  
  # Define path to generic .hdr
- genhdr="/net/nfs/yukon/raid5/data/NOHRSC_SNODAS/generic.hdr"
+ genhdr=$SNODAS_DATA_DIR"/generic.hdr"
  
  # Define out directory for .nc files
- odir="/net/nfs/yukon/raid5/data/NOHRSC_SNODAS/nc"
+ odir=$SNODAS_DATA_DIR"/nc"
+ mkdir -p $odir
  
  # Loop over .dat subdirs. 
  # Copy/pasta 'elif' block below and edit accordingly (e.g., units, long_name)
@@ -96,7 +110,12 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        # Check if masked or not
+                        if [ "$masked"=true ] ; then
+			    gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else 
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
 		
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
@@ -128,8 +147,13 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-		
+	                # Check if masked or not
+                        if [ "$masked"=true ] ; then
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
+	
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
 			
@@ -159,8 +183,13 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-		
+	                # Check if masked or not
+                        if [ "$masked"=true ] ; then
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
+	
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
 			
@@ -190,8 +219,13 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-		
+	                # Check if masked or not
+                        if [ "$masked"=true ] ; then
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
+	
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
 			
