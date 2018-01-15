@@ -111,9 +111,9 @@
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
                         # Check if masked or not
-                        if [ "$masked"=true ] ; then
+                        if [ "$masked" = true ] ; then
 			    gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-                        else 
+                        else
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
                         fi
 		
@@ -148,7 +148,7 @@
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
 	                # Check if masked or not
-                        if [ "$masked"=true ] ; then
+                        if [ "$masked" = true ] ; then
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
                         else
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
@@ -184,7 +184,7 @@
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
 	                # Check if masked or not
-                        if [ "$masked"=true ] ; then
+                        if [ "$masked" = true ] ; then
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
                         else
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
@@ -220,7 +220,7 @@
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
 	                # Check if masked or not
-                        if [ "$masked"=true ] ; then
+                        if [ "$masked" = true ] ; then
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
                         else
                             gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
