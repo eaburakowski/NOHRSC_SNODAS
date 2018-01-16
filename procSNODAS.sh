@@ -55,6 +55,16 @@
 
  # Flag if using masked or unmasked SNODAS extent
  masked=false 
+ 
+ # Flag to subset netcdf files (removes original one!)   
+ subset=true 
+
+ # Define sub Region Of Interest (ROI)
+ # CRHO - SnowCast
+ lon_min=-116.645
+ lon_max=-114.769166666667
+ lat_min=50.66
+ lat_max=51.7933333333333
 
  # Define directory with variable subdirs of dat files
  cd $SNODAS_DATA_DIR
@@ -70,7 +80,8 @@
  # Copy/pasta 'elif' block below and edit accordingly (e.g., units, long_name)
  # to include additional .dat subdirs.  Mind the character spacing on filenames! 
  # Filenames are not consistent across variables. 
- for dirs in PRLQ PRSL SWEM SNWZ
+ # PRLQ PRSL SWEM SNWZ
+ for dirs in SWEM SNWZ
  do
 	echo "Now in working in the $dirs directory"
  	FILES=${dirs}/*.dat
@@ -237,6 +248,30 @@
 		else
 			echo "None of your desired variables were found; check sub-directory abbreviations"
 		fi
+
+                # Add time dimension. Here we assume the output hour of the SNODAS files is at 06:00 UTC
+                year=${date:0:4}
+                month=${date:5:2}
+                day=${date:7:2}
+                date_format=${year}-${month}-${day} # make time format expected YYYY-MM-DD
+                ncap2 -s "defdim(\"time\",-1);time[time]=0;time@long_name=\"Time\";time@timezone=\"UTC\";time@units=\"days since ${date_format} 06:00:00\"" -O $odir/$ofile $odir/$ofile'.temp'
+                # Make time the record dimension and add to other variables
+                ncwa -a time -O $odir/$ofile'.temp' $odir/$ofile
+                ncecat -u time -O $odir/$ofile $odir/$ofile
+                # Clean up
+                rm -f $odir/$ofile'.temp'
+
+                # Final option to subset netcdf file and remove original
+                if [ $subset = true ]; then
+                    echo "Subsetting netcdf file to user defined region"
+                    sub_ofile="${ofile%.*}"
+                    ncea -O -d lat,$lat_min,$lat_max -d lon,$lon_min,$lon_max $odir/$ofile $odir/$sub_ofile"_sub.nc"
+                    
+                    # Remove full extent file
+                    echo "Removing full extent netcdf file"
+                    rm -f $odir/$ofile   
+                fi
+
 	done  # loop over files in subdir	
 			
  done	# loop over subdirs
