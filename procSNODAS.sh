@@ -251,8 +251,8 @@
 
                 # Add time dimension. Here we assume the output hour of the SNODAS files is at 06:00 UTC
                 year=${date:0:4}
-                month=${date:5:2}
-                day=${date:7:2}
+                month=${date:4:2}
+                day=${date:6:2}
                 date_format=${year}-${month}-${day} # make time format expected YYYY-MM-DD
                 ncap2 -s "defdim(\"time\",-1);time[time]=0;time@long_name=\"Time\";time@timezone=\"UTC\";time@units=\"days since ${date_format} 06:00:00\"" -O $odir/$ofile $odir/$ofile'.temp'
                 # Make time the record dimension and add to other variables
