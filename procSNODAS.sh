@@ -1,4 +1,8 @@
-#! /bin/bsh
+#! /bin/bash
+
+# Stop of get any simple error
+ set -e
+
 # EA Burakowski 
 # 2017-07-17
 
@@ -43,20 +47,41 @@
 #
 ##############################################################################
  
+ # Make sure the SNODAS_DATA_DIR environment variable is set
+ if [ -z "$SNODAS_DATA_DIR" ]; then
+    echo "Need to set SNODAS_DATA_DIR"
+    exit 1
+ fi
+
+ # Flag if using masked or unmasked SNODAS extent
+ masked=false 
+ 
+ # Flag to subset netcdf files (removes original one!)   
+ subset=true 
+
+ # Define sub Region Of Interest (ROI)
+ # CRHO - SnowCast
+ lon_min=-116.645
+ lon_max=-114.769166666667
+ lat_min=50.66
+ lat_max=51.7933333333333
+
  # Define directory with variable subdirs of dat files
- cd /net/nfs/yukon/raid5/data/NOHRSC_SNODAS/dat_orig
+ cd $SNODAS_DATA_DIR
  
  # Define path to generic .hdr
- genhdr="/net/nfs/yukon/raid5/data/NOHRSC_SNODAS/generic.hdr"
+ genhdr=$SNODAS_DATA_DIR"/generic.hdr"
  
  # Define out directory for .nc files
- odir="/net/nfs/yukon/raid5/data/NOHRSC_SNODAS/nc"
+ odir=$SNODAS_DATA_DIR"/nc"
+ mkdir -p $odir
  
  # Loop over .dat subdirs. 
  # Copy/pasta 'elif' block below and edit accordingly (e.g., units, long_name)
  # to include additional .dat subdirs.  Mind the character spacing on filenames! 
  # Filenames are not consistent across variables. 
- for dirs in PRLQ PRSL SWEM SNWZ
+ # PRLQ PRSL SWEM SNWZ
+ for dirs in SWEM SNWZ
  do
 	echo "Now in working in the $dirs directory"
  	FILES=${dirs}/*.dat
@@ -96,7 +121,12 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        # Check if masked or not
+                        if [ "$masked" = true ] ; then
+			    gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
 		
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
@@ -128,8 +158,13 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-		
+	                # Check if masked or not
+                        if [ "$masked" = true ] ; then
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
+	
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
 			
@@ -159,8 +194,13 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-		
+	                # Check if masked or not
+                        if [ "$masked" = true ] ; then
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
+	
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
 			
@@ -190,8 +230,13 @@
 			# (2) Generate command to convert binary dat (infile) to netCDF (outfile)
 			ofile=`echo ${var}_snodas_${date}.nc`
 			echo "Will use this for the .nc filename: $ofile"
-			gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
-		
+	                # Check if masked or not
+                        if [ "$masked" = true ] ; then
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84' -a_nodata -9999 -A_ullr -124.7337 52.8754 -66.9421 24.9496 $infiles $odir/$ofile
+                        else
+                            gdal_translate -of NetCDF -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -130.516666666661 58.2333333333310 -62.2499999999975 24.0999999999990 $infiles $odir/$ofile
+                        fi
+	
 			# (3) Change name of variable in .nc file (defaults to band1)
 			ncrename -v Band1,$var $odir/$ofile
 			
@@ -203,6 +248,30 @@
 		else
 			echo "None of your desired variables were found; check sub-directory abbreviations"
 		fi
+
+                # Add time dimension. Here we assume the output hour of the SNODAS files is at 06:00 UTC
+                year=${date:0:4}
+                month=${date:4:2}
+                day=${date:6:2}
+                date_format=${year}-${month}-${day} # make time format expected YYYY-MM-DD
+                ncap2 -s "defdim(\"time\",-1);time[time]=0;time@long_name=\"Time\";time@timezone=\"UTC\";time@units=\"days since ${date_format} 06:00:00\"" -O $odir/$ofile $odir/$ofile'.temp'
+                # Make time the record dimension and add to other variables
+                ncwa -a time -O $odir/$ofile'.temp' $odir/$ofile
+                ncecat -u time -O $odir/$ofile $odir/$ofile
+                # Clean up
+                rm -f $odir/$ofile'.temp'
+
+                # Final option to subset netcdf file and remove original
+                if [ $subset = true ]; then
+                    echo "Subsetting netcdf file to user defined region"
+                    sub_ofile="${ofile%.*}"
+                    ncea -O -d lat,$lat_min,$lat_max -d lon,$lon_min,$lon_max $odir/$ofile $odir/$sub_ofile"_sub.nc"
+                    
+                    # Remove full extent file
+                    echo "Removing full extent netcdf file"
+                    rm -f $odir/$ofile   
+                fi
+
 	done  # loop over files in subdir	
 			
  done	# loop over subdirs
