@@ -28,7 +28,7 @@
 
 
 # Assumes .dat files are stored in separate directories for each variable.  
-# Sub-directory names are 4-letter abbreviations. Feel free to change, however
+# Sub-directory (SNODAS_DATA_DIR) names are 4-letter abbreviations. Feel free to change, however
 # they should be consistent with untarSNODAS.sh
 # Options include: 
 	# PRLQ - liquid precip
